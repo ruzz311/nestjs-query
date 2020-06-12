@@ -1,0 +1,14 @@
+type Query {
+  test(input: Distinct!): Int!
+}
+
+input Distinct {
+  field: TestDistinctDistinctFields!
+}
+
+enum TestDistinctDistinctFields {
+  id
+  stringField
+  numberField
+  boolField
+}

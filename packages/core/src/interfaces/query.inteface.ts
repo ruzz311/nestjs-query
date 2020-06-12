@@ -1,6 +1,7 @@
 import { Paging } from './paging.interface';
 import { Filter } from './filter.interface';
 import { SortField } from './sort-field.interface';
+import { DistinctField } from './distinct.interface';
 
 /**
  * Interface for all queries to a collection of items.
@@ -39,4 +40,8 @@ export interface Query<T> {
    * Option to sort the collection.
    */
   sorting?: SortField<T>[];
+  /**
+   * Option to select distinct columns
+   */
+  distinct?: DistinctField<T>[];
 }

@@ -1,5 +1,5 @@
 import { TypeMetadataStorage } from '@nestjs/graphql/dist/schema-builder/storages/type-metadata.storage';
-import { Class, Filter, SortField } from '@nestjs-query/core';
+import { Class, DistinctField, Filter, SortField } from '@nestjs-query/core';
 import { ObjectTypeMetadata } from '@nestjs/graphql/dist/schema-builder/metadata/object-type.metadata';
 import { ReturnTypeFunc, FieldOptions } from '@nestjs/graphql';
 import { ResolverRelation, ResolverRelationReference } from '../resolvers/relations';
@@ -39,6 +39,8 @@ export class GraphQLQueryMetadataStorage {
 
   private readonly sortTypeStorage: Map<Class<unknown>, Class<SortField<unknown>>>;
 
+  private readonly distinctTypeStorage: Map<Class<unknown>, Class<DistinctField<unknown>>>;
+
   private readonly connectionTypeStorage: Map<Class<unknown>, StaticConnectionType<unknown>>;
 
   private readonly edgeTypeStorage: Map<Class<unknown>, Class<EdgeType<unknown>>>;
@@ -51,6 +53,7 @@ export class GraphQLQueryMetadataStorage {
     this.filterableObjectStorage = new Map<Class<unknown>, FilterableFieldDescriptor<unknown>[]>();
     this.filterTypeStorage = new Map<Class<unknown>, Class<Filter<unknown>>>();
     this.sortTypeStorage = new Map<Class<unknown>, Class<SortField<unknown>>>();
+    this.distinctTypeStorage = new Map<Class<unknown>, Class<DistinctField<unknown>>>();
     this.connectionTypeStorage = new Map<Class<unknown>, StaticConnectionType<unknown>>();
     this.edgeTypeStorage = new Map<Class<unknown>, Class<EdgeType<unknown>>>();
     this.relationStorage = new Map<Class<unknown>, RelationDescriptor<unknown>[]>();
@@ -96,6 +99,14 @@ export class GraphQLQueryMetadataStorage {
 
   getSortType<T>(type: Class<T>): Class<SortField<T>> | undefined {
     return this.getValue(this.sortTypeStorage, type);
+  }
+
+  addDistinctType<T>(type: Class<T>, distinctType: Class<DistinctField<T>>): void {
+    this.distinctTypeStorage.set(type, distinctType as Class<DistinctField<unknown>>);
+  }
+
+  getDistinctType<T>(type: Class<T>): Class<DistinctField<T>> | undefined {
+    return this.getValue(this.distinctTypeStorage, type);
   }
 
   addConnectionType<T>(type: Class<T>, connectionType: StaticConnectionType<T>): void {

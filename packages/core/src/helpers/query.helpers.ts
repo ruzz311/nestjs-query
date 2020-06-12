@@ -1,5 +1,5 @@
 import merge from 'lodash.merge';
-import { Filter, Query, SortField } from '../interfaces';
+import { Filter, Query, SortField, DistinctField } from '../interfaces';
 import { FilterBuilder } from './filter.builder';
 
 export type QueryFieldMap<From, To> = {
@@ -42,11 +42,28 @@ export const transformFilter = <From, To>(
   }, {} as Filter<To>);
 };
 
+export const transformDistinct = <From, To>(
+  distinct: DistinctField<From>[] | undefined,
+  fieldMap: QueryFieldMap<From, To>,
+): DistinctField<To>[] | undefined => {
+  if (!distinct) {
+    return undefined;
+  }
+  return distinct.map((sf) => {
+    const field = fieldMap[sf.field];
+    if (!field) {
+      throw new Error(`No corresponding field found for '${sf.field as string}' when transforming DistinctField`);
+    }
+    return { ...sf, field } as DistinctField<To>;
+  });
+};
+
 export const transformQuery = <From, To>(query: Query<From>, fieldMap: QueryFieldMap<From, To>): Query<To> => {
   return {
     filter: transformFilter(query.filter, fieldMap),
     paging: query.paging,
     sorting: transformSort(query.sorting, fieldMap),
+    distinct: transformDistinct(query.distinct, fieldMap),
   };
 };
 

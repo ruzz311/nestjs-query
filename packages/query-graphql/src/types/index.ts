@@ -1,6 +1,6 @@
 export { PageInfoType, EdgeType, ConnectionType, StaticConnectionType } from './connection';
 export { MutationArgsType } from './mutation-args.type';
-export { CursorPagingType, FilterType, QueryArgsType, SortType, StaticQueryType } from './query';
+export { CursorPagingType, FilterType, QueryArgsType, SortType, DistinctType, StaticQueryType } from './query';
 export { CreateManyInputType } from './create-many-input.type';
 export { CreateOneInputType } from './create-one-input.type';
 export { UpdateManyResponseType } from './update-many-response.type';

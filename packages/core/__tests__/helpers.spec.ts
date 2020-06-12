@@ -8,7 +8,9 @@ import {
   transformFilter,
   transformQuery,
   transformSort,
+  DistinctField,
 } from '../src';
+import { transformDistinct } from '../src/helpers/query.helpers';
 
 class TestDTO {
   first!: string;
@@ -52,6 +54,29 @@ describe('transformSort', () => {
     ];
     expect(() => transformSort(dtoSort, fieldMap)).toThrow(
       "No corresponding field found for 'lasts' when transforming SortField",
+    );
+  });
+});
+
+describe('transformDistinct', () => {
+  it('should return undefined if distinctFields are undefined', () => {
+    expect(transformDistinct(undefined, fieldMap)).toBeUndefined();
+  });
+
+  it('should transform the fields to the correct names', () => {
+    const dtoSort: DistinctField<TestDTO>[] = [{ field: 'first' }, { field: 'last' }];
+    const entitySort: DistinctField<TestEntity>[] = [{ field: 'firstName' }, { field: 'lastName' }];
+    expect(transformDistinct(dtoSort, fieldMap)).toEqual(entitySort);
+  });
+
+  it('should throw an error if the field name is not found', () => {
+    const dtoSort: DistinctField<TestDTO>[] = [
+      { field: 'first' },
+      // @ts-ignore
+      { field: 'lasts' },
+    ];
+    expect(() => transformDistinct(dtoSort, fieldMap)).toThrow(
+      "No corresponding field found for 'lasts' when transforming DistinctField",
     );
   });
 });
